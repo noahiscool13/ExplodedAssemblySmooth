@@ -27,7 +27,7 @@ Download this repository as ZIP and:
 
 ### How to use it:
 
-Check the 'example.fcstd' provided, and see this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
+Check the 'example.fcstd' provided and watch this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
 
   
 ##### Previous version:
