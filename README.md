@@ -1,4 +1,4 @@
-# ExplodedAssembly
+# Exploded Assembly
 FreeCAD workbench to create exploded views and animations of assemblies.
 
 ![show](http://2.bp.blogspot.com/-Og8hzXXrAS0/VuaVxWhcKEI/AAAAAAAACv4/MCYpnIEPUrgeOrYIxr9ZoGqXdT9_bszjQ/s1600/Captura%2Bde%2Bpantalla%2Bde%2B2016-03-14%2B09%253A32%253A47.png)
@@ -15,6 +15,8 @@ FreeCAD workbench to create exploded views and animations of assemblies.
 
 * Use the provided auxiliary assembly tools to place your parts together
 
+* TODO feature: create trajectory from wires and sketches
+
 
 ### Install
 
@@ -25,8 +27,8 @@ Download this repository as ZIP and:
 
 ### How to use it:
 
-Check the 'example.fcstd' provided. A tutorial will be available soon.
+Check the 'example.fcstd' provided, and see this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
 
   
-
+##### Previous version:
 This repository replaces the old one (https://github.com/JMG1/FreeCAD_ExplodedAssemblyAnimationWorkbench) 
