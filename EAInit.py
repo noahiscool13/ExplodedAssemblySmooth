@@ -92,7 +92,7 @@ class PlaceBeforeSelectedTrajectory:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/PlaceBeforeTrajectory.svg',
                 'MenuText': 'PlaceBefore',
-                'ToolTip': 'Places the first selected trajectory before the second selected trajectory'}
+                'ToolTip': 'Select the trajectories you want to reallocate (in order) and finally\nthe trajectory before which you want to place them'}
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
@@ -116,7 +116,7 @@ class PlaceBeforeSelectedTrajectory:
             ea.goToSelectedTrajectory()
 
         except:
-            FreeCAD.Console.PrintError('\n Select two exploded assembly trajectory objects only')
+            FreeCAD.Console.PrintError('\n Select exploded assembly trajectory objects only')
 
 
 class PlayForward:

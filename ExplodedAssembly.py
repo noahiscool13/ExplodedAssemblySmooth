@@ -415,20 +415,28 @@ def goToSelectedTrajectory():
 
 
 def placeBeforeSelectedTrajectory():
-    # select trajectory A, trajectory B and Run
-    # places the trajectory A before the trajectory B
-    sel_trajA, sel_trajB = FreeCAD.Gui.Selection.getSelectionEx()
+    # select the trajectoreis you want to reallocate and finally,
+    # the trajectory before wich you want to place them
+    sel_traj = FreeCAD.Gui.Selection.getSelectionEx()
     # retrieve EA folder
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
     # create an auxiliary folder to re organizate exploded assembly
     aux_folder = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroup','ea_aux')
+    before_traj = sel_traj[-1].Object
     for traj in EAFolder.Group:
-        if traj.Name == sel_trajB.Object.Name:
-            aux_folder.addObject(sel_trajA.Object)
-            aux_folder.addObject(traj)  # traj b
+        if traj.Name == before_traj.Name:
+            for sel in sel_traj:
+                aux_folder.addObject(sel.Object)
 
-        elif traj.Name != sel_trajA.Object.Name:
-            aux_folder.addObject(traj)
+        elif traj.Name != before_traj.Name:
+            add_traj = True
+            for sel in sel_traj:
+                if traj.Name == sel.Object.Name:
+                    add_traj = False
+                    break
+
+            if add_traj:
+                aux_folder.addObject(traj)
 
     # save the attributes of EAFolder'
     EAF_InitialPlacements = EAFolder.InitialPlacements
