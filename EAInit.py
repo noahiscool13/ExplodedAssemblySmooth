@@ -87,6 +87,38 @@ class CreateWireGroup:
         pass
 
 
+class PlaceBeforeSelectedTrajectory:
+    # execute this function with caution
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/PlaceBeforeTrajectory.svg',
+                'MenuText': 'PlaceBefore',
+                'ToolTip': 'Places the first selected trajectory before the second selected trajectory'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        # check selection before running (rearrange objects is dangerous, use with caution)
+        try:
+            sel = FreeCAD.Gui.Selection.getSelectionEx()
+            a = sel[0].Object.Distance
+            a = sel[1].Object.Distance
+            #  selection are trajectories, proceed
+            ea.placeBeforeSelectedTrajectory()
+            ea.resetPlacement()
+            FreeCAD.Gui.Selection.clearSelection()
+            FreeCAD.Gui.Selection.addSelection(sel[0].Object)
+            ea.goToSelectedTrajectory()
+
+        except:
+            FreeCAD.Console.PrintError('\n Select two exploded assembly trajectory objects only')
+
+
 class PlayForward:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/PlayForward.svg',
@@ -95,7 +127,8 @@ class PlayForward:
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
-            return True
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
 
         else:
             return False
@@ -112,7 +145,8 @@ class PlayBackward:
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
-            return True
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
 
         else:
             return False
@@ -158,6 +192,29 @@ class GoToEnd:
     def Activated(self):
         ea.resetPlacement()
         ea.goToEnd()
+
+
+class GoToSelectedTrajectory:
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/ExplodeToSelection.svg',
+                'MenuText': 'ExplodeToSelection',
+                'ToolTip': 'Expand up to the selected trajectory'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument.ExplodedAssembly:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        try:
+            ea.resetPlacement()
+            ea.goToSelectedTrajectory()
+
+        except:
+            FreeCAD.Console.PrintError('Error: Select one exploded animation trajectory')
 
 
 class ToggleTrajectoryVisibility:
@@ -268,10 +325,12 @@ if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('CreateBoltGroup', CreateBoltGroup())
     FreeCAD.Gui.addCommand('CreateSimpleGroup', CreateSimpleGroup())
     FreeCAD.Gui.addCommand('CreateWireGroup', CreateWireGroup())
+    FreeCAD.Gui.addCommand('PlaceBeforeSelectedTrajectory', PlaceBeforeSelectedTrajectory())
     FreeCAD.Gui.addCommand('GoToStart', GoToStart())
     FreeCAD.Gui.addCommand('PlayBackward', PlayBackward())
     FreeCAD.Gui.addCommand('PlayForward', PlayForward())
     FreeCAD.Gui.addCommand('GoToEnd', GoToEnd())
+    FreeCAD.Gui.addCommand('GoToSelectedTrajectory',GoToSelectedTrajectory())
     FreeCAD.Gui.addCommand('ToggleTrajectoryVisibility', ToggleTrajectoryVisibility())
     FreeCAD.Gui.addCommand('AlignToEdge', AlignToEdge())
     FreeCAD.Gui.addCommand('PointToPoint', PointToPoint())

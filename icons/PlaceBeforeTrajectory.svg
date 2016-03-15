@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg4152"
+   version="1.1"
+   inkscape:version="0.91 r"
+   viewBox="0 0 64 64"
+   sodipodi:docname="PlaceBeforeTrajectory.svg">
+  <defs
+     id="defs4154">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-170.27273 : 79.545455 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="86.181819 : 71.727273 : 1"
+       inkscape:persp3d-origin="65.636364 : 31.424242 : 1"
+       id="perspective4891" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="194.51968 : 48.559726 : 1"
+       inkscape:vp_y="0 : 796.03835 : 0"
+       inkscape:vp_z="-19.493068 : 42.336153 : 1"
+       inkscape:persp3d-origin="-2.3477719 : 10.253395 : 1"
+       id="perspective4891-7" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.75"
+     inkscape:cx="-57.649024"
+     inkscape:cy="19.328735"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1028"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4157">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <rect
+       style="opacity:1;fill:#034eba;fill-opacity:1;stroke:none;stroke-width:7.80000019;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:15.60000038, 7.80000019, 3.9000001, 7.80000019;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4160-9"
+       width="17.597599"
+       height="18.130133"
+       x="2.6870553"
+       y="1.3215456" />
+    <rect
+       style="opacity:1;fill:#189900;fill-opacity:1;stroke:none;stroke-width:7.80000019;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:15.60000038, 7.80000019, 3.9000001, 7.80000019;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4160-9-3"
+       width="17.597599"
+       height="18.130133"
+       x="19.31111"
+       y="44.336334" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#ffa207;stroke-width:5.9;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 37.669507,54.357635 60.296925,53.97194 50.711596,20.908709 21.984593,20.802204"
+       id="path4143"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:#ffa400;fill-rule:evenodd;stroke:#ffa000;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
+       d="M 23.013112,20.030815 41.012193,9.87419 40.755064,20.930769"
+       id="path4147"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="opacity:1;fill:#189900;fill-opacity:1;stroke:none;stroke-width:7.80000019;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:15.60000038, 7.80000019, 3.9000001, 7.80000019;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4160-9-3-2"
+       width="17.597599"
+       height="18.130133"
+       x="9.3830185"
+       y="24.389479" />
+  </g>
+</svg>

@@ -38,6 +38,8 @@ class ExplodedAssembly(Workbench):
         import EAInit
         self.tools = ['CreateBoltGroup',
                       'CreateSimpleGroup',
+                      'PlaceBeforeSelectedTrajectory',
+                      'GoToSelectedTrajectory',
                       'GoToStart',
                       'PlayBackward',
                       'PlayForward',

@@ -148,7 +148,7 @@ def createBoltDisassemble():
                 pass
 
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
-    # add initial placement if this is the first move of the parts
+    # add initial placement if this is the first movement of the parts
     for name in SDObj.names:
         try:
             plm = EAFolder.InitialPlacements[name]
@@ -274,64 +274,63 @@ def runAnimation(end='end', mode='complete', direction='forward'):
     # toggle 'InAnimation variable' to disable other icons temporally
     FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation = True
     # # complete mode
+    # if mode == 'complete':
+    if direction != 'backward':
+        resetPlacement()
+    # start animation
+    EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
+    if direction == 'backward':
+        EAFolder.reverse()
+
     if mode == 'complete':
-        if direction != 'backward':
-            resetPlacement()
-        # start animation
-        EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
+        number_of_trajectories = len(EAFolder)
+
+    elif mode == 'toPoint':
+        number_of_trajectories = end
+
+    for r in xrange(number_of_trajectories):
+        traj = EAFolder[r]
+        # highligh current trajectory
+        FreeCAD.Gui.Selection.addSelection(traj)
+        # buffer objects
+        objects = []
+        for name in traj.names:
+            objects.append(FreeCAD.ActiveDocument.getObject(name))
+
+        inc_D = traj.Distance / float(traj.AnimationSteps)
+        inc_R = traj.Revolutions / float(traj.AnimationSteps)
         if direction == 'backward':
-            EAFolder.reverse()
+            inc_D = inc_D*-1.0
+            inc_R = inc_R*-1.0
 
-        for traj in EAFolder:
-            # highligh current trajectory
-            FreeCAD.Gui.Selection.addSelection(traj)
-            # buffer objects
-            objects = []
-            for name in traj.names:
-                objects.append(FreeCAD.ActiveDocument.getObject(name))
+        for i in xrange(traj.AnimationSteps):
+            if i == 0:
+                dir_vectors = []
+                rot_vectors = []
+                rot_centers = []
+                for s in xrange(len(objects)):
+                    dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
+                    rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
+                    rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
-            inc_D = traj.Distance / float(traj.AnimationSteps)
-            inc_R = traj.Revolutions / float(traj.AnimationSteps)
-            if direction == 'backward':
-                inc_D = inc_D*-1.0
-                inc_R = inc_R*-1.0
+            for n in xrange(len(objects)):
+                obj = objects[n]
+                obj_base = dir_vectors[n]*inc_D
+                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360.0)
+                obj_rot_center = rot_centers[n]
+                incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
+                obj.Placement = incremental_placement.multiply(obj.Placement)
 
-            for i in xrange(traj.AnimationSteps):
-                if i == 0:
-                    dir_vectors = []
-                    rot_vectors = []
-                    rot_centers = []
-                    for s in xrange(len(objects)):
-                        dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
-                        rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
-                        rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
+            FreeCAD.Gui.updateGui()
+            time.sleep(traj.AnimationStepTime)
 
-                for n in xrange(len(objects)):
-                    obj = objects[n]
-                    obj_base = dir_vectors[n]*inc_D
-                    obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360.0)
-                    obj_rot_center = rot_centers[n]
-                    incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
-                    obj.Placement = incremental_placement.multiply(obj.Placement)
+        # clear selection
+        FreeCAD.Gui.Selection.clearSelection()
 
-                FreeCAD.Gui.updateGui()
-                time.sleep(traj.AnimationStepTime)
-
-            # clear selection
-            FreeCAD.Gui.Selection.clearSelection()
-
-        if direction == 'backward':
-            resetPlacement()
-    # The 'stepTime' function is the time between steps
-    if mode == 'toPoint' and end != 'end':
-        # end variable should be and int pointing to the last trajectory to expand
-        for i in xrange(end):
-            pass
-
-
+    # set pointer to current trajectory index
+    FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = number_of_trajectories
     # toggle InAnimation to activate icons deactivated before
     FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation = False
-
 
 
 def goToEnd():
@@ -363,6 +362,98 @@ def goToEnd():
                 obj.Placement = incremental_placement.multiply(obj.Placement)
 
 
+    FreeCAD.Gui.updateGui()
+
+
+def goToSelectedTrajectory():
+    # retrieve selection
+    traj_name = FreeCAD.Gui.Selection.getSelectionEx()[0].Object.Name
+    # start animation
+    EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
+    for traj in EAFolder:
+        objects = []
+        update_gui = False
+        for name in traj.names:
+            objects.append(FreeCAD.ActiveDocument.getObject(name))
+
+        if traj_name == traj.Name:
+            inc_D = traj.Distance / float(traj.AnimationSteps)
+            inc_R = traj.Revolutions / float(traj.AnimationSteps)
+            animation_range = traj.AnimationSteps
+            update_gui = True
+
+        else:
+            inc_D = traj.Distance / float(1)
+            inc_R = traj.Revolutions / float(1)
+            animation_range = 1
+
+        for i in xrange(animation_range):
+            if i == 0:
+                dir_vectors = []
+                rot_vectors = []
+                rot_centers = []
+                for s in xrange(len(objects)):
+                    dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
+                    rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
+                    rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
+
+            for n in xrange(len(objects)):
+                obj = objects[n]
+                obj_base = dir_vectors[n]*inc_D
+                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360)
+                obj_rot_center = rot_centers[n]
+                incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
+                obj.Placement = incremental_placement.multiply(obj.Placement)
+
+            if update_gui:
+                FreeCAD.Gui.updateGui()
+
+        if traj_name == traj.Name:
+            # exit once selected trajectory has been reached
+            break
+
+
+
+def placeBeforeSelectedTrajectory():
+    # select trajectory A, trajectory B and Run
+    # places the trajectory A before the trajectory B
+    sel_trajA, sel_trajB = FreeCAD.Gui.Selection.getSelectionEx()
+    # retrieve EA folder
+    EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
+    # create an auxiliary folder to re organizate exploded assembly
+    aux_folder = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroup','ea_aux')
+    for traj in EAFolder.Group:
+        if traj.Name == sel_trajB.Object.Name:
+            aux_folder.addObject(sel_trajA.Object)
+            aux_folder.addObject(traj)  # traj b
+
+        elif traj.Name != sel_trajA.Object.Name:
+            aux_folder.addObject(traj)
+
+    # save the attributes of EAFolder'
+    EAF_InitialPlacements = EAFolder.InitialPlacements
+    EAF_CurrentTrajectory = EAFolder.CurrentTrajectory
+    EAF_ResetAnimation = EAFolder.ResetAnimation
+    EAF_InAnimation = EAFolder.InAnimation
+    EAF_RemoveAllTrajectories = EAFolder.RemoveAllTrajectories
+    FreeCAD.ActiveDocument.removeObject(EAFolder.Name)
+    # create the EAFolder
+    EAFolder = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroupPython', 'ExplodedAssembly')
+    ExplodedAssemblyFolder(EAFolder)
+    ExplodedAssemblyFolderViewProvider(EAFolder.ViewObject)
+    # restore its content
+    for traj in aux_folder.Group:
+        EAFolder.addObject(traj)
+
+    EAFolder.InitialPlacements = EAF_InitialPlacements
+    EAFolder.CurrentTrajectory = EAF_CurrentTrajectory
+    EAFolder.ResetAnimation = EAF_ResetAnimation
+    EAFolder.InAnimation = EAF_InAnimation
+    EAFolder.RemoveAllTrajectories = EAF_RemoveAllTrajectories
+    # remove auxiliary folder
+    FreeCAD.ActiveDocument.removeObject(aux_folder.Name)
+    # recompute document
+    FreeCAD.ActiveDocument.recompute()
     FreeCAD.Gui.updateGui()
 
 
