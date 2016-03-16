@@ -134,7 +134,16 @@ class PlayForward:
             return False
 
     def Activated(self):
-        ea.runAnimation()
+        EA = FreeCAD.ActiveDocument.ExplodedAssembly
+        if EA.CurrentTrajectory <= 0:
+            # if exploded state = 0 or -1, reset and run
+            ea.resetPlacement()
+            ea.runAnimation()
+
+        else:
+            # if animation has been paused in the middle:
+            cr_traj = EA.Group[EA.CurrentTrajectory]
+            ea.runAnimation(start=EA.CurrentTrajectory+1, mode='toPoint')
 
 
 class PlayBackward:
@@ -152,9 +161,40 @@ class PlayBackward:
             return False
 
     def Activated(self):
-        ea.resetPlacement()
-        ea.goToEnd()
-        ea.runAnimation(direction='backward')
+        EA = FreeCAD.ActiveDocument.ExplodedAssembly
+        if EA.CurrentTrajectory <= 0:
+            # if exploded state = 0 or -1, reset and run
+            ea.resetPlacement()
+            ea.goToEnd()
+            ea.runAnimation(direction='backward')
+
+        else:
+            # if animation has been paused in the middle:
+            ea.runAnimation(end=-EA.CurrentTrajectory - 1 + len(EA.Group),
+                            mode='toPoint',
+                            direction='backward')
+
+
+class StopAnimation:
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/Pause.svg',
+                'MenuText': 'StopAnimation',
+                'ToolTip': 'Stops the animation at the current trajectory'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return False
+
+            else:
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation = False
+        # FreeCAD.Gui.updateGui()
 
 
 class GoToStart:
@@ -173,6 +213,7 @@ class GoToStart:
 
     def Activated(self):
         ea.resetPlacement()
+        FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = 0
 
 
 class GoToEnd:
@@ -192,6 +233,7 @@ class GoToEnd:
     def Activated(self):
         ea.resetPlacement()
         ea.goToEnd()
+        FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = -1
 
 
 class GoToSelectedTrajectory:
@@ -328,6 +370,7 @@ if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('PlaceBeforeSelectedTrajectory', PlaceBeforeSelectedTrajectory())
     FreeCAD.Gui.addCommand('GoToStart', GoToStart())
     FreeCAD.Gui.addCommand('PlayBackward', PlayBackward())
+    FreeCAD.Gui.addCommand('StopAnimation', StopAnimation())
     FreeCAD.Gui.addCommand('PlayForward', PlayForward())
     FreeCAD.Gui.addCommand('GoToEnd', GoToEnd())
     FreeCAD.Gui.addCommand('GoToSelectedTrajectory',GoToSelectedTrajectory())

@@ -42,6 +42,7 @@ class ExplodedAssembly(Workbench):
                       'GoToSelectedTrajectory',
                       'GoToStart',
                       'PlayBackward',
+                      'StopAnimation',
                       'PlayForward',
                       'GoToEnd',
                       'ToggleTrajectoryVisibility']

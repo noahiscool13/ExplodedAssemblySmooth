@@ -264,7 +264,7 @@ def resetPlacement():
 
 
 
-def runAnimation(end='end', mode='complete', direction='forward'):
+def runAnimation(start=0, end=0, mode='complete', direction='forward'):
     # runs the animation from a start step number to the end step number
     # mode: 'complete', 'toPoint'
     # 'complete' means forward from start to end and backwars if already in end
@@ -274,22 +274,36 @@ def runAnimation(end='end', mode='complete', direction='forward'):
     # toggle 'InAnimation variable' to disable other icons temporally
     FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation = True
     # # complete mode
-    # if mode == 'complete':
-    if direction != 'backward':
-        resetPlacement()
     # start animation
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
-    if direction == 'backward':
-        EAFolder.reverse()
-
     if mode == 'complete':
         number_of_trajectories = len(EAFolder)
 
     elif mode == 'toPoint':
-        number_of_trajectories = end
+        number_of_trajectories = len(EAFolder) - start - end
 
-    for r in xrange(number_of_trajectories):
-        traj = EAFolder[r]
+    traj_iterator = xrange(number_of_trajectories)
+    if direction == 'backward':
+        traj_iterator = xrange(number_of_trajectories-1, -1, -1)
+
+    animation_paused = False
+    for r in traj_iterator:
+        # break animation loop if not InAnimation (this is where pause animation takes place):
+        EA = FreeCAD.ActiveDocument.ExplodedAssembly
+        if not(EA.InAnimation):
+            animation_paused = True
+            break
+
+        if direction == 'forward':
+            traj = EAFolder[r+start]
+            # set current stop point
+            EA.CurrentTrajectory = r+start
+
+        elif direction == 'backward':
+            traj = EAFolder[r]
+            # set current stop point
+            EA.CurrentTrajectory = r-1
+
         # highligh current trajectory
         FreeCAD.Gui.Selection.addSelection(traj)
         # buffer objects
@@ -328,9 +342,17 @@ def runAnimation(end='end', mode='complete', direction='forward'):
         FreeCAD.Gui.Selection.clearSelection()
 
     # set pointer to current trajectory index
-    FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = number_of_trajectories
+    EA = FreeCAD.ActiveDocument.ExplodedAssembly
     # toggle InAnimation to activate icons deactivated before
-    FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation = False
+    EA.InAnimation = False
+    # set CurrentTrajectory number
+    if not(animation_paused):
+        if direction == 'forward' and end == 0:
+            EA.CurrentTrajectory = len(EA.Group)-1
+
+        if direction == 'backward' and start == 0:
+            EA.CurrentTrajectory = 0
+
 
 
 def goToEnd():
