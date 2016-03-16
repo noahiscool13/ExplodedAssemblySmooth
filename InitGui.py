@@ -58,6 +58,9 @@ class ExplodedAssembly(Workbench):
 
     def Activated(self):
         import ExplodedAssembly as ea
+        if not(FreeCAD.ActiveDocument):
+            FreeCAD.newDocument()
+
         ea.checkDocumentStructure()
         FreeCAD.Console.PrintMessage('Exploded Assembly workbench loaded\n')
 
