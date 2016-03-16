@@ -392,7 +392,8 @@ def goToSelectedTrajectory():
     traj_name = FreeCAD.Gui.Selection.getSelectionEx()[0].Object.Name
     # start animation
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
-    for traj in EAFolder:
+    for r in xrange(len(EAFolder)):
+        traj = EAFolder[r]
         objects = []
         update_gui = False
         for name in traj.names:
@@ -434,7 +435,8 @@ def goToSelectedTrajectory():
             # exit once selected trajectory has been reached
             break
 
-
+    # set current trajectory cursor to current trajectory
+    FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = r
 
 def placeBeforeSelectedTrajectory():
     # select the trajectoreis you want to reallocate and finally,

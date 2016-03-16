@@ -254,6 +254,7 @@ class GoToSelectedTrajectory:
         try:
             ea.resetPlacement()
             ea.goToSelectedTrajectory()
+            EA = FreeCAD.ActiveDocument.ExplodedAssembly
 
         except:
             FreeCAD.Console.PrintError('Error: Select one exploded animation trajectory')
