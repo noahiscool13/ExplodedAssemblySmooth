@@ -94,7 +94,7 @@ class BoltGroupObject:
     def execute(self, fp):
         resetPlacement()
         goToEnd()
-
+        FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = -1
 
 class BoltGroupObjectViewProvider:
     def __init__(self, obj):
@@ -190,6 +190,7 @@ class SimpleGroupObject:
     def execute(self, fp):
         resetPlacement()
         goToEnd()
+        FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = -1
 
 
 class SimpleGroupObjectViewProvider:

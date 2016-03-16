@@ -254,7 +254,6 @@ class GoToSelectedTrajectory:
         try:
             ea.resetPlacement()
             ea.goToSelectedTrajectory()
-            EA = FreeCAD.ActiveDocument.ExplodedAssembly
 
         except:
             FreeCAD.Console.PrintError('Error: Select one exploded animation trajectory')
@@ -287,7 +286,7 @@ class AlignToEdge:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/AlignToEdge.svg',
                 'MenuText': 'Align to edge',
-                'ToolTip': 'pick one edge of the object you want to align and then the edge of the object used as reference'}
+                'ToolTip': 'Auxiliary tool to align shapes.\nPick one edge of the object you want to align and\nthen the edge of the object used as reference'}
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
@@ -318,7 +317,7 @@ class PointToPoint:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/SharePoint.svg',
                 'MenuText': 'Point to point',
-                'ToolTip': 'Point to Point. \nSelect one point from the shape you want to move \n and then the point from other shape where you want to place it'}
+                'ToolTip': 'Auxiliary tool to move point to point.\nSelect one point from the shape you want to move \n and then the point from other shape where you want to place it'}
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
@@ -343,7 +342,7 @@ class PlaceConcentric:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/ShareCenter.svg',
                 'MenuText': 'Place concentrically',
-                'ToolTip': 'Place concentrically\nPlace the first circular edge selected concentric to \nthe second circular edge selected'}
+                'ToolTip': 'Auxiliary tool to place two shapes concentrically\nPlace the first circular edge selected concentric to \nthe second circular edge selected'}
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
