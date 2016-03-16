@@ -363,6 +363,27 @@ class PlaceConcentric:
         objA.Placement.Base.z += v.z
 
 
+# non icon comands
+class LoadExampleFile:
+    def GetResources(self):
+        return {'Pixmap': '',
+                'MenuText': 'Load Example File',
+                'ToolTip': 'Load an exploded assembly example file'}
+
+    def IsActive(self):
+        if not(FreeCADGui.ActiveDocument):
+            return True
+
+        else:
+            if FreeCAD.ActiveDocument.Name != 'example':
+                return True
+
+            else:
+                return False
+
+    def Activated(self):
+        FreeCAD.open(__dir__ + '/example.fcstd')
+
 if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('CreateBoltGroup', CreateBoltGroup())
     FreeCAD.Gui.addCommand('CreateSimpleGroup', CreateSimpleGroup())
@@ -378,3 +399,4 @@ if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('AlignToEdge', AlignToEdge())
     FreeCAD.Gui.addCommand('PointToPoint', PointToPoint())
     FreeCAD.Gui.addCommand('PlaceConcentric', PlaceConcentric())
+    FreeCAD.Gui.addCommand('LoadExampleFile', LoadExampleFile())

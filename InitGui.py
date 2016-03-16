@@ -55,6 +55,7 @@ class ExplodedAssembly(Workbench):
         self.appendToolbar('ExplodedAssembly', self.tools1)
         self.appendMenu('ExplodedAssembly', self.tools)
         self.appendMenu('ExplodedAssembly', self.tools1)
+        self.appendMenu('ExplodedAssembly', ['LoadExampleFile'])
 
     def Activated(self):
         import ExplodedAssembly as ea
