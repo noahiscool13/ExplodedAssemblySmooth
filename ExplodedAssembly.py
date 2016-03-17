@@ -349,7 +349,7 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
     # set CurrentTrajectory number
     if not(animation_paused):
         if direction == 'forward' and end == 0:
-            EA.CurrentTrajectory = len(EA.Group)-1
+            EA.CurrentTrajectory = -1
 
         if direction == 'backward' and start == 0:
             EA.CurrentTrajectory = 0
@@ -523,6 +523,8 @@ def updateTrajectoryLines():
         traj.addObject(l_obj)
 
     FreeCAD.Gui.updateGui()
+
+
 
 def visibilityTrajectoryLines(show):
     # show or hide trajectory lines
