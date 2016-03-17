@@ -27,8 +27,13 @@ Download this repository as ZIP and:
 
 ### How to use it:
 
-Check the 'example.fcstd' provided and watch this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
+Check the provided 'example.fcstd'.
+Load the workbench and then do click on "Load Example File" inside the workbench commands tab:
+
+![example file](https://1.bp.blogspot.com/-FeveiMS2BKc/Vus6ahKVNAI/AAAAAAAACwE/p01Ry20Wr9QZhCPhkXtTXWtdJkY29EAYQ/s1600/rCaptura%2Bde%2Bpantalla%2Bde%2B2016-03-18%2B00%253A11%253A22.png)
+
+Watch also this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
 
   
-##### Previous version:
+##### Previous versions:
 This repository replaces the old one (https://github.com/JMG1/FreeCAD_ExplodedAssemblyAnimationWorkbench) 
