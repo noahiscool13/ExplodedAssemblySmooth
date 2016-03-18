@@ -19,8 +19,16 @@ FreeCAD workbench to create exploded views and animations of assemblies.
 
 
 ### Install
+#####Using git on Ubuntu & Mint:
+- Open the command propmpt (terminal) with the keys **ctrl+alt+t**
 
-Download this repository as ZIP and:
+- Install git:  ***sudo apt-get install git***
+
+- Clone repository:  ***git clone https://github.com/JMG1/ExplodedAssembly ~/.FreeCAD/Mod***
+
+That's all, the next time you launch FreeCAD the workbench should be incorporated automagically.
+
+#####To install manually download this repository as ZIP and:
 - For Ubuntu, Mint and similar OS's, extract it inside */home/username/.FreeCAD/Mod*
 - For Windows, extract it inside *drive: \Users\your_user_name\AppData\Roaming\FreeCAD\Mod*
 
@@ -34,6 +42,7 @@ Load the workbench and then do click on "Load Example File" inside the workbench
 
 Watch also this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
 
+Wiki documentation will be available soon.
   
 ##### Previous versions:
 This repository replaces the old one (https://github.com/JMG1/FreeCAD_ExplodedAssemblyAnimationWorkbench) 
