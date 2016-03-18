@@ -24,7 +24,7 @@ FreeCAD workbench to create exploded views and animations of assemblies.
 
 - Install git:  ***sudo apt-get install git***
 
-- Clone repository:  ***git clone https://github.com/JMG1/ExplodedAssembly ~/.FreeCAD/Mod***
+- Clone repository:  ***git clone https://github.com/JMG1/ExplodedAssembly ~/.FreeCAD/Mod/ExplodedAssembly***
 
 That's all, the next time you launch FreeCAD the workbench should be incorporated automagically.
 
