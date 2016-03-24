@@ -36,8 +36,22 @@ class ExplodedAssembly(Workbench):
 
     def Initialize(self):
         import EAInit
-        self.tools = ['CreateBoltGroup',
+        self.Toolbar_tools = ['CreateBoltGroup',
                       'CreateSimpleGroup',
+                      'GoToSelectedTrajectory',
+                      'GoToStart',
+                      'PlayBackward',
+                      'StopAnimation',
+                      'PlayForward',
+                      'GoToEnd',
+                      'ToggleTrajectoryVisibility',
+                      'AlignToEdge',
+                      'PointToPoint',
+                      'PlaceConcentric']
+
+        self.Menu_tools = ['CreateBoltGroup',
+                      'CreateSimpleGroup',
+                      'ModifyIndividualObjectTrajectory',
                       'PlaceBeforeSelectedTrajectory',
                       'GoToSelectedTrajectory',
                       'GoToStart',
@@ -45,17 +59,14 @@ class ExplodedAssembly(Workbench):
                       'StopAnimation',
                       'PlayForward',
                       'GoToEnd',
-                      'ToggleTrajectoryVisibility']
+                      'ToggleTrajectoryVisibility',
+                      'AlignToEdge',
+                      'PointToPoint',
+                      'PlaceConcentric',
+                      'LoadExampleFile']
 
-        self.tools1 = ['AlignToEdge',
-                       'PointToPoint',
-                       'PlaceConcentric']
-
-        self.appendToolbar('ExplodedAssembly', self.tools)
-        self.appendToolbar('ExplodedAssembly', self.tools1)
-        self.appendMenu('ExplodedAssembly', self.tools)
-        self.appendMenu('ExplodedAssembly', self.tools1)
-        self.appendMenu('ExplodedAssembly', ['LoadExampleFile'])
+        self.appendToolbar('ExplodedAssembly', self.Toolbar_tools)
+        self.appendMenu('ExplodedAssembly', self.Menu_tools)
 
     def Activated(self):
         import ExplodedAssembly as ea

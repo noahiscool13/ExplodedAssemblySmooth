@@ -118,11 +118,33 @@ class PlaceBeforeSelectedTrajectory:
         except:
             FreeCAD.Console.PrintError('\n Select exploded assembly trajectory objects only')
 
+class ModifyIndividualObjectTrajectory:
+        # execute this function with caution
+        def GetResources(self):
+            return {'Pixmap': __dir__ + '/icons/ModifyIndividualObjectTrajectory.svg',
+                    'MenuText': 'Modify Individual Object Trajectory',
+                    'ToolTip': 'Explode objects on several directions at once\nSelect the trajectory, select the object and\nthe face which its normal is the new director\nvector'}
+
+        def IsActive(self):
+            if FreeCADGui.ActiveDocument:
+                if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                    return True
+
+            else:
+                return False
+
+        def Activated(self):
+            # check selection before running (rearrange objects is dangerous, use with caution)
+            ea.modifyIndividualObjectTrajectory()
+            sel_traj = FreeCAD.Gui.Selection.getSelectionEx()[0].Object
+            FreeCAD.Gui.Selection.clearSelection()
+            FreeCAD.Gui.Selection.addSelection(sel_traj)
+            ea.goToSelectedTrajectory()
 
 class PlayForward:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/PlayForward.svg',
-                'MenuText': 'Create Route',
+                'MenuText': 'Play Forward',
                 'ToolTip': 'Run the assembly animation'}
 
     def IsActive(self):
@@ -149,8 +171,8 @@ class PlayForward:
 class PlayBackward:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/PlayBackward.svg',
-                'MenuText': 'Create Route',
-                'ToolTip': 'Run the assembly animation backwards'}
+                'MenuText': 'Play Backwards',
+                'ToolTip': __dir__ + 'icons/TrajectoryEdit.svg'}
 
     def IsActive(self):
         if FreeCADGui.ActiveDocument:
@@ -388,6 +410,7 @@ if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('CreateBoltGroup', CreateBoltGroup())
     FreeCAD.Gui.addCommand('CreateSimpleGroup', CreateSimpleGroup())
     FreeCAD.Gui.addCommand('CreateWireGroup', CreateWireGroup())
+    FreeCAD.Gui.addCommand('ModifyIndividualObjectTrajectory', ModifyIndividualObjectTrajectory())
     FreeCAD.Gui.addCommand('PlaceBeforeSelectedTrajectory', PlaceBeforeSelectedTrajectory())
     FreeCAD.Gui.addCommand('GoToStart', GoToStart())
     FreeCAD.Gui.addCommand('PlayBackward', PlayBackward())

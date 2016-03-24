@@ -490,6 +490,42 @@ def placeBeforeSelectedTrajectory():
     FreeCAD.Gui.updateGui()
 
 
+def modifyIndividualObjectTrajectory():
+    # multi direction for simple trajectory(at the moment)
+    # selection:    trajectory_obj + shape + normal direction
+    # selection:    trajectory_obj + normal_direction(selected over the shape)
+    sel_traj = FreeCAD.Gui.Selection.getSelectionEx()[0].Object
+    sel_objects = FreeCAD.Gui.Selection.getSelectionEx()[1:]
+    if len(sel_objects) == 1:
+        obj_name = sel_objects[0].Object.Name
+        sel_face = sel_objects[0].SubObjects[0]
+
+    else:
+        obj_name = sel_objects[0].Object.Name
+        sel_face = sel_objects[1].SubObjects[0]
+
+    for i in xrange(len(sel_traj.names)):
+        name = sel_traj.names[i]
+        if obj_name == name:
+            # if selected trajectory is a simple trajectory:
+            if sel_traj.Name[0:11] == 'SimpleGroup':
+                # asign new explosion direction to sel normal
+                v = sel_face.normalAt(0,0)
+                sel_traj.dir_vectors[i] = (v[0], v[1], v[2])
+                break
+
+            # if selected trajectory is a bolt group
+        elif sel_traj.Name[0:9] == 'BoltGroup':
+                # assign new exploded direction, rotation centre and vector
+                v = sel_face.normalAt(0,0)
+                c = sel_face.CenterOfMass
+                sel_traj.dir_vectors[i] = (v[0], v[1], v[2])
+                sel_traj.rot_vectors[i] = (v[0], v[1], v[2])
+                sel_traj.rot_centers[i] = (c[0], c[1], c[2])
+                break
+
+
+
 def updateTrajectoryLines():
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
     # remove all the previous trajectory lines
