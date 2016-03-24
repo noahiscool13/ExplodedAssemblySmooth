@@ -250,6 +250,57 @@ def createSimpleDisassemble():
     FreeCAD.ActiveDocument.recompute()
 
 
+# wire group trajectory ########################################################
+class WireGroupObject:
+    def __init__(self, obj):
+        obj.addProperty('App::PropertyPythonObject', 'names').names = []
+        obj.addProperty('App::PropertyFloat', 'AnimationStepTime').AnimationStepTime = 0.0
+        obj.addProperty('App::PropertyInteger', 'AnimationStepsEdge').AnimationStepsEdge = 10
+        obj.Proxy = self
+
+    def onChanged(self, fp, prop):
+        pass
+
+    def execute(self, fp):
+        resetPlacement()
+        goToEnd()
+        FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = -1
+
+
+class WireGroupObjectViewProvider:
+    def __init__(self, obj):
+        obj.Proxy = self
+
+    def getIcon(self):
+        __dir__ = os.path.dirname(__file__)
+        return __dir__ + '/icons/WireTrajectory.svg'
+
+
+def createWireDisassemble():
+    # select the objects and finally the trajectory objects
+    # Animation will run over the edges of the trajectory object
+    sel_objects = FreeCAD.Gui.Selection.getSelection()[0:-2]
+    sel_wire = FreeCAD.Gui.Selection.getSelection()[-1]
+    # Initialize object
+    WDObj = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroupPython', 'WireGroup')
+    WireGroupObject(WDObj)
+    #WireGroupObjectViewProvider(WDObj.ViewObject)
+    # add object names
+    for obj in sel_objects:
+        obj_name = obj.Name
+        WDObj.names.append(obj_name)
+
+    # add trajectory objecto to this new wire group
+    WDObj.addObject(sel_wire)
+    # place inside ea folder
+    EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
+    EAFolder.addObject(WDObj)
+    FreeCAD.ActiveDocument.recompute()
+
+
+
+
+
 def resetPlacement():
     # restore the placement of all objects
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
@@ -307,37 +358,67 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
 
         # highligh current trajectory
         FreeCAD.Gui.Selection.addSelection(traj)
-        # buffer objects
-        objects = []
-        for name in traj.names:
-            objects.append(FreeCAD.ActiveDocument.getObject(name))
+        # If trajectory is a bolt group or simple group:
+        if traj.Name[0:11] == 'SimpleGroup' or traj.Name[0:9] == 'BoltGroup':
+            # buffer objects
+            objects = []
+            for name in traj.names:
+                objects.append(FreeCAD.ActiveDocument.getObject(name))
 
-        inc_D = traj.Distance / float(traj.AnimationSteps)
-        inc_R = traj.Revolutions / float(traj.AnimationSteps)
-        if direction == 'backward':
-            inc_D = inc_D*-1.0
-            inc_R = inc_R*-1.0
+            inc_D = traj.Distance / float(traj.AnimationSteps)
+            inc_R = traj.Revolutions / float(traj.AnimationSteps)
+            if direction == 'backward':
+                inc_D = inc_D*-1.0
+                inc_R = inc_R*-1.0
 
-        for i in xrange(traj.AnimationSteps):
-            if i == 0:
-                dir_vectors = []
-                rot_vectors = []
-                rot_centers = []
-                for s in xrange(len(objects)):
-                    dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
-                    rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
-                    rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
+            for i in xrange(traj.AnimationSteps):
+                if i == 0:
+                    dir_vectors = []
+                    rot_vectors = []
+                    rot_centers = []
+                    for s in xrange(len(objects)):
+                        dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
+                        rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
+                        rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
-            for n in xrange(len(objects)):
-                obj = objects[n]
-                obj_base = dir_vectors[n]*inc_D
-                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360.0)
-                obj_rot_center = rot_centers[n]
-                incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
-                obj.Placement = incremental_placement.multiply(obj.Placement)
+                for n in xrange(len(objects)):
+                    obj = objects[n]
+                    obj_base = dir_vectors[n]*inc_D
+                    obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360.0)
+                    obj_rot_center = rot_centers[n]
+                    incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
+                    obj.Placement = incremental_placement.multiply(obj.Placement)
 
-            FreeCAD.Gui.updateGui()
-            time.sleep(traj.AnimationStepTime)
+                FreeCAD.Gui.updateGui()
+                time.sleep(traj.AnimationStepTime)
+
+        else:
+            # if traj is a WireGroup object
+            steps = traj.AnimationStepsEdge
+            edges = traj.Shape.Edges
+            for edge in edges:
+                points = edge.discretize(steps)
+                vectors = []
+                for i in xrange(len(points)-1):
+                    pa = points[i]
+                    pb = points[i+1]
+                    v = (pb[0]+pa[0], pb[1]+pa[1], pb[2]+pa[2])
+                    vectors.append(v)
+
+            if direction == 'backward':
+                vectors.reverse()
+
+            for v in vectors:
+                for i in xrange((len(traj.names))):
+                    obj = FreeCAD.ActiveDocument.getObject(traj.names[i])
+                    # incremental placement
+                    obj.Placement.x = obj.Placement.x + v[0]
+                    obj.Placement.y = obj.Placement.y + v[1]
+                    obj.Placement.z = obj.Placement.z + v[2]
+
+                FreeCAD.Gui.udpateGui()
+                time.sleep(traj.AnimationStepTime)
+
 
         # clear selection
         FreeCAD.Gui.Selection.clearSelection()

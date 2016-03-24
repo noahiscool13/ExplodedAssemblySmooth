@@ -21,6 +21,11 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************/
+
+__title__="Exploded Assembly Workbench for FreeCAD"
+__author__ = "Javier Martínez García"
+__url__ = "http://linuxforanengineer.blogspot.com"
+
 import FreeCAD
 import FreeCADGui
 
@@ -36,18 +41,22 @@ class ExplodedAssembly(Workbench):
 
     def Initialize(self):
         import EAInit
-        self.Toolbar_tools = ['CreateBoltGroup',
-                      'CreateSimpleGroup',
-                      'GoToSelectedTrajectory',
-                      'GoToStart',
-                      'PlayBackward',
-                      'StopAnimation',
-                      'PlayForward',
-                      'GoToEnd',
-                      'ToggleTrajectoryVisibility',
-                      'AlignToEdge',
-                      'PointToPoint',
-                      'PlaceConcentric']
+        self.CreationTools = ['CreateBoltGroup',
+                              'CreateSimpleGroup',
+                              'ModifyIndividualObjectTrajectory',
+                              'PlaceBeforeSelectedTrajectory',
+                              'ToggleTrajectoryVisibility']
+
+        self.AnimationControlTools = ['GoToStart',
+                                      'PlayBackward',
+                                      'StopAnimation',
+                                      'PlayForward',
+                                      'GoToEnd',
+                                      'GoToSelectedTrajectory']
+
+        self.AuxiliaryAssemblyTools = ['AlignToEdge',
+                                       'PointToPoint',
+                                       'PlaceConcentric']
 
         self.Menu_tools = ['CreateBoltGroup',
                       'CreateSimpleGroup',
@@ -65,7 +74,9 @@ class ExplodedAssembly(Workbench):
                       'PlaceConcentric',
                       'LoadExampleFile']
 
-        self.appendToolbar('ExplodedAssembly', self.Toolbar_tools)
+        self.appendToolbar('ExplodedAssemblyCreationTools', self.CreationTools)
+        self.appendToolbar('ExplodedAssemblyAnimationControlTools', self.AnimationControlTools)
+        self.appendToolbar('ExplodedAssemblyAuxiliarAssemblyTools', self.AuxiliaryAssemblyTools)
         self.appendMenu('ExplodedAssembly', self.Menu_tools)
 
     def Activated(self):
