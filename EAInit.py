@@ -27,6 +27,7 @@ import os
 import FreeCAD
 import FreeCADGui
 import ExplodedAssembly as ea
+import CameraAnimation as ca
 __dir__ = os.path.dirname(__file__)
 
 # TODO CHANGE NAME: SIMPLE DISASSEMBLE GROUP, WIRE DISASSEMBLE GROUP
@@ -87,6 +88,7 @@ class CreateWireGroup:
         pass
 
 
+
 class PlaceBeforeSelectedTrajectory:
     # execute this function with caution
     def GetResources(self):
@@ -140,6 +142,62 @@ class ModifyIndividualObjectTrajectory:
             FreeCAD.Gui.Selection.clearSelection()
             FreeCAD.Gui.Selection.addSelection(sel_traj)
             ea.goToSelectedTrajectory()
+
+
+# camera commands
+class CreateManualCamera:
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/AnimationCameraManual.svg',
+                'MenuText': 'Manual Animation Camera',
+                'ToolTip': 'Create a transition between two cameras'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        pass
+
+
+class CreateEdgeCamera:
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/AnimationCameraEdge.svg',
+                'MenuText': 'Manual Animation Camera',
+                'ToolTip': 'Create a transition between two cameras'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        pass
+
+
+class CreateFollowCamera:
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/AnimationCameraFollow.svg',
+                'MenuText': 'Manual Animation Camera',
+                'ToolTip': 'Create a transition between two cameras'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        pass
+
 
 class PlayForward:
     def GetResources(self):
@@ -335,6 +393,29 @@ class AlignToEdge:
         objA.Placement = new_plm.multiply(objA.Placement)
 
 
+class Rotate15:
+    def GetResources(self):
+        return {'Pixmap': __dir__ + '/icons/Rotate90.svg',
+                'MenuText': 'Rotate 15',
+                'ToolTip': 'Auxiliary tool to rotate a shape 15 degrees.\nSelect a face of the object you want to rotate\n and it will be rotated 15 degrees using its normal as rotation\n axis'}
+
+    def IsActive(self):
+        if FreeCADGui.ActiveDocument:
+            if not(FreeCAD.ActiveDocument.ExplodedAssembly.InAnimation):
+                return True
+
+        else:
+            return False
+
+    def Activated(self):
+        sel = FreeCAD.Gui.Selection.getSelectionEx()
+        objA = sel[0].Object
+        selFace = sel[0].SubObjects[0]
+        rot_center = selFace.CenterOfMass
+        rot_axis = selFace.normalAt(0, 0)
+        rot = FreeCAD.Rotation(rot_axis, 15)
+        objA.Placement = FreeCAD.Placement(FreeCAD.Vector(0,0,0), rot, rot_center).multiply(objA.Placement)
+
 class PointToPoint:
     def GetResources(self):
         return {'Pixmap': __dir__ + '/icons/SharePoint.svg',
@@ -411,6 +492,9 @@ if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('CreateSimpleGroup', CreateSimpleGroup())
     FreeCAD.Gui.addCommand('CreateWireGroup', CreateWireGroup())
     FreeCAD.Gui.addCommand('ModifyIndividualObjectTrajectory', ModifyIndividualObjectTrajectory())
+    FreeCAD.Gui.addCommand('CreateManualCamera', CreateManualCamera())
+    FreeCAD.Gui.addCommand('CreateEdgeCamera', CreateEdgeCamera())
+    FreeCAD.Gui.addCommand('CreateFollowCamera', CreateFollowCamera())
     FreeCAD.Gui.addCommand('PlaceBeforeSelectedTrajectory', PlaceBeforeSelectedTrajectory())
     FreeCAD.Gui.addCommand('GoToStart', GoToStart())
     FreeCAD.Gui.addCommand('PlayBackward', PlayBackward())
@@ -420,6 +504,7 @@ if FreeCAD.GuiUp:
     FreeCAD.Gui.addCommand('GoToSelectedTrajectory',GoToSelectedTrajectory())
     FreeCAD.Gui.addCommand('ToggleTrajectoryVisibility', ToggleTrajectoryVisibility())
     FreeCAD.Gui.addCommand('AlignToEdge', AlignToEdge())
+    FreeCAD.Gui.addCommand('Rotate15', Rotate15())
     FreeCAD.Gui.addCommand('PointToPoint', PointToPoint())
     FreeCAD.Gui.addCommand('PlaceConcentric', PlaceConcentric())
     FreeCAD.Gui.addCommand('LoadExampleFile', LoadExampleFile())

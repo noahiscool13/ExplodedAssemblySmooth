@@ -47,6 +47,10 @@ class ExplodedAssembly(Workbench):
                               'PlaceBeforeSelectedTrajectory',
                               'ToggleTrajectoryVisibility']
 
+        self.CameraAnimation = ['CreateManualCamera',
+                                'CreateEdgeCamera',
+                                'CreateFollowCamera']
+
         self.AnimationControlTools = ['GoToStart',
                                       'PlayBackward',
                                       'StopAnimation',
@@ -55,26 +59,29 @@ class ExplodedAssembly(Workbench):
                                       'GoToSelectedTrajectory']
 
         self.AuxiliaryAssemblyTools = ['AlignToEdge',
+                                       'Rotate15',
                                        'PointToPoint',
                                        'PlaceConcentric']
 
         self.Menu_tools = ['CreateBoltGroup',
-                      'CreateSimpleGroup',
-                      'ModifyIndividualObjectTrajectory',
-                      'PlaceBeforeSelectedTrajectory',
-                      'GoToSelectedTrajectory',
-                      'GoToStart',
-                      'PlayBackward',
-                      'StopAnimation',
-                      'PlayForward',
-                      'GoToEnd',
-                      'ToggleTrajectoryVisibility',
-                      'AlignToEdge',
-                      'PointToPoint',
-                      'PlaceConcentric',
-                      'LoadExampleFile']
+                              'CreateSimpleGroup',
+                              'ModifyIndividualObjectTrajectory',
+                              'PlaceBeforeSelectedTrajectory',
+                              'GoToSelectedTrajectory',
+                              'GoToStart',
+                              'PlayBackward',
+                              'StopAnimation',
+                              'PlayForward',
+                              'GoToEnd',
+                              'ToggleTrajectoryVisibility',
+                              'AlignToEdge',
+                              'Rotate15',
+                              'PointToPoint',
+                              'PlaceConcentric',
+                              'LoadExampleFile']
 
         self.appendToolbar('ExplodedAssemblyCreationTools', self.CreationTools)
+        #self.appendToolbar('ExplodedAssemblyCameraTools', self.CameraAnimation)
         self.appendToolbar('ExplodedAssemblyAnimationControlTools', self.AnimationControlTools)
         self.appendToolbar('ExplodedAssemblyAuxiliarAssemblyTools', self.AuxiliaryAssemblyTools)
         self.appendMenu('ExplodedAssembly', self.Menu_tools)
