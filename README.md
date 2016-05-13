@@ -5,7 +5,6 @@ FreeCAD workbench to create exploded views and animations of assemblies.
 
 [See it in action](https://www.youtube.com/watch?v=lzYR7I2h7KQ)
 
-![show](https://2.bp.blogspot.com/-tnSy-KUFGjA/VzZAnJDWmtI/AAAAAAAACyQ/nejOOXu-1ewZv-aSOy_qIxKjHvjU7QAYACLcB/s1600/exploded_595-780_1.gif)
 
 ### Features
 
