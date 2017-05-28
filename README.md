@@ -1,49 +1,61 @@
 # Exploded Assembly
 FreeCAD workbench to create exploded views and animations of assemblies.
 
-![show](http://2.bp.blogspot.com/-Og8hzXXrAS0/VuaVxWhcKEI/AAAAAAAACv4/MCYpnIEPUrgeOrYIxr9ZoGqXdT9_bszjQ/s1600/Captura%2Bde%2Bpantalla%2Bde%2B2016-03-14%2B09%253A32%253A47.png)
+![ExplodedAssembly Icon](https://cloud.githubusercontent.com/assets/4140247/26527312/3388059a-435f-11e7-8317-10e041f18d35.PNG) The Exploded Assembly icon. 
 
-[See it in action](https://www.youtube.com/watch?v=lzYR7I2h7KQ)
+![show](https://cloud.githubusercontent.com/assets/4140247/26527729/1cde4544-4368-11e7-9c85-03f974680ad8.PNG)
 
+Watch a [screencast of Exploded Assembly](https://www.youtube.com/watch?v=lzYR7I2h7KQ)
+
+**Important note: This repository replaces the now obsolete (https://github.com/JMG1/FreeCAD_ExplodedAssemblyAnimationWorkbench)**
 
 ### Features
+* Create nice explosions of assemblies graphically (no code at all!)   
+* Create sub-exploded groups   
+* Give rotation to screws and nuts for realistic disassembles   
+* Use the provided auxiliary assembly tools to place your parts together   
+* TODO feature: create trajectory from wires and sketches   
 
-* Create nice explosions of assemblies graphically (no code at all!)
+### Installation
+##### Automatically via Addon Manager (Recommended)
+As of FreeCAD v0.17.9944 the new Addon Manager has been merged. Install this addon by:   
+- Opening **Tools** > **Addon Manager** 
+- Locating **ExplodedAssembly** and installing.  
+- Relaunching FreeCAD.   
 
-* Create sub-exploded groups
+##### Manually install using git
+Instructions for Ubuntu & Mint specifically but can be adapted to other distros. 
+- Open the command prompt (terminal) with the keys **ctrl+alt+t**   
+- Install git:  ***sudo apt-get install git***   
+- Clone repository:  ***git clone https://github.com/JMG1/ExplodedAssembly ~/.FreeCAD/Mod/ExplodedAssembly***   
+- Relaunch FreeCAD (workbench should be incorporated automagically).  
 
-* Give rotation to screws and nuts for realistic disassembles
+##### Manually install via ZIP
+- Download https://github.com/JMG1/ExplodedAssembly as a ZIP (click 'Clone or Download' button)   
+- For Ubuntu, Mint and similar OS's, extract it inside */home/username/.FreeCAD/Mod*   
+- For Windows, extract it inside *drive: \Users\your_user_name\AppData\Roaming\FreeCAD\Mod*   
+Then  
+- Relaunch FreeCAD (workbench should be incorporated automagically).
 
-* Use the provided auxiliary assembly tools to place your parts together
+### Usage
 
-* TODO feature: create trajectory from wires and sketches
+1. Check the provided 'example.fcstd'.  
+2. Load the workbench and then click on "Load Example File" inside the workbench commands tab:
 
+![example file](https://cloud.githubusercontent.com/assets/4140247/26527781/1ea3f7ba-4369-11e7-90cb-2c85a09e878f.PNG)
 
-### Install
-#####Using git on Ubuntu & Mint:
-- Open the command propmpt (terminal) with the keys **ctrl+alt+t**
+Watch the [Exploded Assembly workflow screencast](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be). 
 
-- Install git:  ***sudo apt-get install git***
-
-- Clone repository:  ***git clone https://github.com/JMG1/ExplodedAssembly ~/.FreeCAD/Mod/ExplodedAssembly***
-
-That's all, the next time you launch FreeCAD the workbench should be incorporated automagically.
-
-#####To install manually download this repository as ZIP and:
-- For Ubuntu, Mint and similar OS's, extract it inside */home/username/.FreeCAD/Mod*
-- For Windows, extract it inside *drive: \Users\your_user_name\AppData\Roaming\FreeCAD\Mod*
-
-
-### How to use it:
-
-Check the provided 'example.fcstd'.
-Load the workbench and then do click on "Load Example File" inside the workbench commands tab:
-
-![example file](https://1.bp.blogspot.com/-FeveiMS2BKc/Vus6ahKVNAI/AAAAAAAACwE/p01Ry20Wr9QZhCPhkXtTXWtdJkY29EAYQ/s1600/rCaptura%2Bde%2Bpantalla%2Bde%2B2016-03-18%2B00%253A11%253A22.png)
-
-Watch also this [workflow video](https://www.youtube.com/watch?v=t72qdG772Q8&feature=youtu.be)
-
+### Documentation
 Wiki documentation will be available soon.
   
-##### Previous versions:
-This repository replaces the old one (https://github.com/JMG1/FreeCAD_ExplodedAssemblyAnimationWorkbench) 
+### Feedback 
+For bugs please open a ticket in the [issue queue](https://github.com/JMG1/ExplodedAssembly/issues). For discussion please use the [dedicated Exploded Assembly thread](https://forum.freecadweb.org/viewtopic.php?f=24&t=9028) in the FreeCAD forums.
+
+#### License 
+
+#### Author
+Javier Martínez @JMG1
+
+
+
