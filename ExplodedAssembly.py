@@ -334,9 +334,9 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
     elif mode == 'toPoint':
         number_of_trajectories = len(EAFolder) - start - end
 
-    traj_iterator = xrange(number_of_trajectories)
+    traj_iterator = range(number_of_trajectories)
     if direction == 'backward':
-        traj_iterator = xrange(number_of_trajectories-1, -1, -1)
+        traj_iterator = range(number_of_trajectories-1, -1, -1)
 
     animation_paused = False
     for r in traj_iterator:
@@ -371,17 +371,17 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
                 inc_D = inc_D*-1.0
                 inc_R = inc_R*-1.0
 
-            for i in xrange(traj.AnimationSteps):
+            for i in range(traj.AnimationSteps):
                 if i == 0:
                     dir_vectors = []
                     rot_vectors = []
                     rot_centers = []
-                    for s in xrange(len(objects)):
+                    for s in range(len(objects)):
                         dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
                         rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
                         rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
-                for n in xrange(len(objects)):
+                for n in range(len(objects)):
                     obj = objects[n]
                     obj_base = dir_vectors[n]*inc_D
                     obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360.0)
@@ -399,7 +399,7 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
             for edge in edges:
                 points = edge.discretize(steps)
                 vectors = []
-                for i in xrange(len(points)-1):
+                for i in range(len(points)-1):
                     pa = points[i]
                     pb = points[i+1]
                     v = (pb[0]+pa[0], pb[1]+pa[1], pb[2]+pa[2])
@@ -409,7 +409,7 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
                 vectors.reverse()
 
             for v in vectors:
-                for i in xrange((len(traj.names))):
+                for i in range((len(traj.names))):
                     obj = FreeCAD.ActiveDocument.getObject(traj.names[i])
                     # incremental placement
                     obj.Placement.x = obj.Placement.x + v[0]
@@ -447,17 +447,17 @@ def goToEnd():
 
         inc_D = traj.Distance / float(1)
         inc_R = traj.Revolutions / float(1)
-        for i in xrange(1):
+        for i in range(1):
             if i == 0:
                 dir_vectors = []
                 rot_vectors = []
                 rot_centers = []
-                for s in xrange(len(objects)):
+                for s in range(len(objects)):
                     dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
                     rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
                     rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
-            for n in xrange(len(objects)):
+            for n in range(len(objects)):
                 obj = objects[n]
                 obj_base = dir_vectors[n]*inc_D
                 obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360)
@@ -474,7 +474,7 @@ def goToSelectedTrajectory():
     traj_name = FreeCAD.Gui.Selection.getSelectionEx()[0].Object.Name
     # start animation
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly.Group
-    for r in xrange(len(EAFolder)):
+    for r in range(len(EAFolder)):
         traj = EAFolder[r]
         objects = []
         update_gui = False
@@ -492,17 +492,17 @@ def goToSelectedTrajectory():
             inc_R = traj.Revolutions / float(1)
             animation_range = 1
 
-        for i in xrange(animation_range):
+        for i in range(animation_range):
             if i == 0:
                 dir_vectors = []
                 rot_vectors = []
                 rot_centers = []
-                for s in xrange(len(objects)):
+                for s in range(len(objects)):
                     dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
                     rot_vectors.append(FreeCAD.Vector(tuple(traj.rot_vectors[s])))
                     rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
-            for n in xrange(len(objects)):
+            for n in range(len(objects)):
                 obj = objects[n]
                 obj_base = dir_vectors[n]*inc_D
                 obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360)
@@ -585,7 +585,7 @@ def modifyIndividualObjectTrajectory():
         obj_name = sel_objects[0].Object.Name
         sel_face = sel_objects[1].SubObjects[0]
 
-    for i in xrange(len(sel_traj.names)):
+    for i in range(len(sel_traj.names)):
         name = sel_traj.names[i]
         if obj_name == name:
             # if selected trajectory is a simple trajectory:
@@ -624,11 +624,11 @@ def updateTrajectoryLines():
         inc_D = traj.Distance
         dir_vectors = []
         rot_centers = []
-        for s in xrange(len(objects)):
+        for s in range(len(objects)):
             dir_vectors.append(FreeCAD.Vector(tuple(traj.dir_vectors[s])))
             rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
-        for n in xrange(len(objects)):
+        for n in range(len(objects)):
             pa = rot_centers[n]# objects[n].Placement.Base
             pb = rot_centers[n] + dir_vectors[n]*inc_D
             lines_compound.append(Part.makeLine(pa, pb))
