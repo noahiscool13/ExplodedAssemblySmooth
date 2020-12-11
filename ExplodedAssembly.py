@@ -213,6 +213,11 @@ def createSimpleDisassemble():
     dir_vector = selection[-1].SubObjects[-1].normalAt(0, 0)
     # the rotation center is the center of mass of the last face selected
     rot_center = selection[-1].SubObjects[-1].CenterOfMass
+    
+    # ignore last object if it cannot be moved, it is only used for positioning
+    if FreeCAD.ActiveDocument.getObject(selection[-1].Object.Name) is None:
+        del selection[-1]
+    
     # create trajectory data
     for sel_obj in selection:
         # append object name
