@@ -1,30 +1,31 @@
 # -*- coding: utf-8 -*-
 # Exploded Assembly Animation workbench for FreeCAD
 # (c) 2016 Javier Martínez García
-#***************************************************************************
-#*   (c) Javier Martínez García 2016                                       *
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU General Public License (GPL)            *
-#*   as published by the Free Software Foundation; either version 2 of     *
-#*   the License, or (at your option) any later version.                   *
-#*   for detail see the LICENCE text file.                                 *
-#*                                                                         *
-#*   This program is distributed in the hope that it will be useful,       *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Lesser General Public License for more details.                   *
-#*                                                                         *
-#*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        *
-#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
-#*   USA                                                                   *
-#*                                                                         *
-#***************************************************************************/
+# ***************************************************************************
+# *   (c) Javier Martínez García 2016                                       *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU General Public License (GPL)            *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Lesser General Public License for more details.                   *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with FreeCAD; if not, write to the Free Software        *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************/
 
 from __future__ import division
 import os
 import time
+from smoothstep import smoothstep, smootherstep
 import FreeCAD
 import Part
 
@@ -86,6 +87,7 @@ class BoltGroupObject:
         obj.addProperty('App::PropertyFloat', 'Revolutions').Revolutions = 0.0
         obj.addProperty('App::PropertyFloat', 'AnimationStepTime').AnimationStepTime = 0.0
         obj.addProperty('App::PropertyInteger', 'AnimationSteps').AnimationSteps = 20
+        obj.addProperty('App::PropertyBool', 'Smooth').Smooth = False
         obj.Proxy = self
 
     def onChanged(self, fp, prop):
@@ -95,6 +97,7 @@ class BoltGroupObject:
         resetPlacement()
         goToEnd()
         FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = -1
+
 
 class BoltGroupObjectViewProvider:
     def __init__(self, obj):
@@ -107,7 +110,7 @@ class BoltGroupObjectViewProvider:
 
 def createBoltDisassemble():
     # add object to the Document and initialize it
-    SDObj = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroupPython','BoltGroup')
+    SDObj = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroupPython', 'BoltGroup')
     BoltGroupObject(SDObj)
     BoltGroupObjectViewProvider(SDObj.ViewObject)
     # retrieve selection
@@ -143,6 +146,7 @@ def createBoltDisassemble():
                     SDObj.distance.append(10.0)
                     SDObj.revolutions.append(0)
                     SDObj.animation_steps.append(20.0)
+                    SDObj.Smooth.append(False)
 
             except:
                 pass
@@ -182,6 +186,7 @@ class SimpleGroupObject:
         obj.addProperty('App::PropertyFloat', 'Revolutions').Revolutions = 0.0
         obj.addProperty('App::PropertyFloat', 'AnimationStepTime').AnimationStepTime = 0.0
         obj.addProperty('App::PropertyInteger', 'AnimationSteps').AnimationSteps = 20
+        obj.addProperty('App::PropertyBool', 'Smooth').Smooth = False
         obj.Proxy = self
 
     def onChanged(self, fp, prop):
@@ -206,6 +211,7 @@ def createSimpleDisassemble():
     # add object to the Document and initialize it
     SDObj = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroupPython', 'SimpleGroup')
     SimpleGroupObject(SDObj)
+    SDObj.Smooth = False
     SimpleGroupObjectViewProvider(SDObj.ViewObject)
     # retrieve selection
     selection = FreeCAD.Gui.Selection.getSelectionEx()
@@ -213,11 +219,13 @@ def createSimpleDisassemble():
     dir_vector = selection[-1].SubObjects[-1].normalAt(0, 0)
     # the rotation center is the center of mass of the last face selected
     rot_center = selection[-1].SubObjects[-1].CenterOfMass
-    
+
     # ignore last object if it cannot be moved, it is only used for positioning
     if FreeCAD.ActiveDocument.getObject(selection[-1].Object.Name) is None:
         del selection[-1]
-    
+
+
+
     # create trajectory data
     for sel_obj in selection:
         # append object name
@@ -231,6 +239,7 @@ def createSimpleDisassemble():
         # append rotation center
         JSON_rot_center = (rot_center[0], rot_center[1], rot_center[2])
         SDObj.rot_centers.append(JSON_rot_center)
+
 
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
     # add initial placement if this is the first move of the parts
@@ -289,7 +298,7 @@ def createWireDisassemble():
     # Initialize object
     WDObj = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroupPython', 'WireGroup')
     WireGroupObject(WDObj)
-    #WireGroupObjectViewProvider(WDObj.ViewObject)
+    # WireGroupObjectViewProvider(WDObj.ViewObject)
     # add object names
     for obj in sel_objects:
         obj_name = obj.Name
@@ -301,9 +310,6 @@ def createWireDisassemble():
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
     EAFolder.addObject(WDObj)
     FreeCAD.ActiveDocument.recompute()
-
-
-
 
 
 def resetPlacement():
@@ -318,7 +324,6 @@ def resetPlacement():
             base = FreeCAD.Vector(plm[0][0], plm[0][1], plm[0][2])
             rot = FreeCAD.Rotation(plm[1][0], plm[1][1], plm[1][2], plm[1][3])
             obj.Placement = FreeCAD.Placement(base, rot)
-
 
 
 def runAnimation(start=0, end=0, mode='complete', direction='forward'):
@@ -341,25 +346,25 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
 
     traj_iterator = range(number_of_trajectories)
     if direction == 'backward':
-        traj_iterator = range(number_of_trajectories-1, -1, -1)
+        traj_iterator = range(number_of_trajectories - 1, -1, -1)
 
     animation_paused = False
     for r in traj_iterator:
         # break animation loop if not InAnimation (this is where pause animation takes place):
         EA = FreeCAD.ActiveDocument.ExplodedAssembly
-        if not(EA.InAnimation):
+        if not (EA.InAnimation):
             animation_paused = True
             break
 
         if direction == 'forward':
-            traj = EAFolder[r+start]
+            traj = EAFolder[r + start]
             # set current stop point
-            EA.CurrentTrajectory = r+start
+            EA.CurrentTrajectory = r + start
 
         elif direction == 'backward':
             traj = EAFolder[r]
             # set current stop point
-            EA.CurrentTrajectory = r-1
+            EA.CurrentTrajectory = r - 1
 
         # highligh current trajectory
         FreeCAD.Gui.Selection.addSelection(traj)
@@ -370,12 +375,16 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
             for name in traj.names:
                 objects.append(FreeCAD.ActiveDocument.getObject(name))
 
-            inc_D = traj.Distance / float(traj.AnimationSteps)
-            inc_R = traj.Revolutions / float(traj.AnimationSteps)
-            if direction == 'backward':
-                inc_D = inc_D*-1.0
-                inc_R = inc_R*-1.0
+            if traj.Smooth:
+                inc_D = 1
+                inc_R = 1
+            else:
+                inc_D = traj.Distance / float(traj.AnimationSteps)
+                inc_R = traj.Revolutions / float(traj.AnimationSteps)
 
+            if direction == 'backward':
+                inc_D = inc_D * -1
+                inc_R = inc_R * -1
             for i in range(traj.AnimationSteps):
                 if i == 0:
                     dir_vectors = []
@@ -387,9 +396,16 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
                         rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
                 for n in range(len(objects)):
+                    smooth_dt = smootherstep(i + 1, 0, traj.AnimationSteps) - smootherstep(i, 0, traj.AnimationSteps)
+
                     obj = objects[n]
-                    obj_base = dir_vectors[n]*inc_D
-                    obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360.0)
+                    if traj.Smooth:
+                        obj_base = dir_vectors[n] * smooth_dt * traj.Distance * inc_D
+                        obj_rot = FreeCAD.Rotation(rot_vectors[n], smooth_dt * 360.0 * traj.Revolutions * inc_R)
+                    else:
+                        obj_base = dir_vectors[n] * inc_D
+                        obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R * 360.0)
+
                     obj_rot_center = rot_centers[n]
                     incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
                     obj.Placement = incremental_placement.multiply(obj.Placement)
@@ -404,10 +420,10 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
             for edge in edges:
                 points = edge.discretize(steps)
                 vectors = []
-                for i in range(len(points)-1):
+                for i in range(len(points) - 1):
                     pa = points[i]
-                    pb = points[i+1]
-                    v = (pb[0]+pa[0], pb[1]+pa[1], pb[2]+pa[2])
+                    pb = points[i + 1]
+                    v = (pb[0] + pa[0], pb[1] + pa[1], pb[2] + pa[2])
                     vectors.append(v)
 
             if direction == 'backward':
@@ -424,7 +440,6 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
                 FreeCAD.Gui.udpateGui()
                 time.sleep(traj.AnimationStepTime)
 
-
         # clear selection
         FreeCAD.Gui.Selection.clearSelection()
 
@@ -433,13 +448,12 @@ def runAnimation(start=0, end=0, mode='complete', direction='forward'):
     # toggle InAnimation to activate icons deactivated before
     EA.InAnimation = False
     # set CurrentTrajectory number
-    if not(animation_paused):
+    if not (animation_paused):
         if direction == 'forward' and end == 0:
             EA.CurrentTrajectory = -1
 
         if direction == 'backward' and start == 0:
             EA.CurrentTrajectory = 0
-
 
 
 def goToEnd():
@@ -464,12 +478,11 @@ def goToEnd():
 
             for n in range(len(objects)):
                 obj = objects[n]
-                obj_base = dir_vectors[n]*inc_D
-                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360)
+                obj_base = dir_vectors[n] * inc_D
+                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R * 360)
                 obj_rot_center = rot_centers[n]
                 incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
                 obj.Placement = incremental_placement.multiply(obj.Placement)
-
 
     FreeCAD.Gui.updateGui()
 
@@ -509,8 +522,8 @@ def goToSelectedTrajectory():
 
             for n in range(len(objects)):
                 obj = objects[n]
-                obj_base = dir_vectors[n]*inc_D
-                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R*360)
+                obj_base = dir_vectors[n] * inc_D
+                obj_rot = FreeCAD.Rotation(rot_vectors[n], inc_R * 360)
                 obj_rot_center = rot_centers[n]
                 incremental_placement = FreeCAD.Placement(obj_base, obj_rot, obj_rot_center)
                 obj.Placement = incremental_placement.multiply(obj.Placement)
@@ -525,6 +538,7 @@ def goToSelectedTrajectory():
     # set current trajectory cursor to current trajectory
     FreeCAD.ActiveDocument.ExplodedAssembly.CurrentTrajectory = r
 
+
 def placeBeforeSelectedTrajectory():
     # select the trajectoreis you want to reallocate and finally,
     # the trajectory before wich you want to place them
@@ -532,7 +546,7 @@ def placeBeforeSelectedTrajectory():
     # retrieve EA folder
     EAFolder = FreeCAD.ActiveDocument.ExplodedAssembly
     # create an auxiliary folder to re organizate exploded assembly
-    aux_folder = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroup','ea_aux')
+    aux_folder = FreeCAD.ActiveDocument.addObject('App::DocumentObjectGroup', 'ea_aux')
     before_traj = sel_traj[-1].Object
     for traj in EAFolder.Group:
         if traj.Name == before_traj.Name:
@@ -596,20 +610,19 @@ def modifyIndividualObjectTrajectory():
             # if selected trajectory is a simple trajectory:
             if sel_traj.Name[0:11] == 'SimpleGroup':
                 # asign new explosion direction to sel normal
-                v = sel_face.normalAt(0,0)
+                v = sel_face.normalAt(0, 0)
                 sel_traj.dir_vectors[i] = (v[0], v[1], v[2])
                 break
 
             # if selected trajectory is a bolt group
         elif sel_traj.Name[0:9] == 'BoltGroup':
-                # assign new exploded direction, rotation centre and vector
-                v = sel_face.normalAt(0,0)
-                c = sel_face.CenterOfMass
-                sel_traj.dir_vectors[i] = (v[0], v[1], v[2])
-                sel_traj.rot_vectors[i] = (v[0], v[1], v[2])
-                sel_traj.rot_centers[i] = (c[0], c[1], c[2])
-                break
-
+            # assign new exploded direction, rotation centre and vector
+            v = sel_face.normalAt(0, 0)
+            c = sel_face.CenterOfMass
+            sel_traj.dir_vectors[i] = (v[0], v[1], v[2])
+            sel_traj.rot_vectors[i] = (v[0], v[1], v[2])
+            sel_traj.rot_centers[i] = (c[0], c[1], c[2])
+            break
 
 
 def updateTrajectoryLines():
@@ -634,18 +647,17 @@ def updateTrajectoryLines():
             rot_centers.append(FreeCAD.Vector(tuple(traj.rot_centers[s])))
 
         for n in range(len(objects)):
-            pa = rot_centers[n]# objects[n].Placement.Base
-            pb = rot_centers[n] + dir_vectors[n]*inc_D
+            pa = rot_centers[n]  # objects[n].Placement.Base
+            pb = rot_centers[n] + dir_vectors[n] * inc_D
             lines_compound.append(Part.makeLine(pa, pb))
 
-        l_obj = FreeCAD.ActiveDocument.addObject('Part::Feature','trajectory_line')
+        l_obj = FreeCAD.ActiveDocument.addObject('Part::Feature', 'trajectory_line')
         l_obj.Shape = Part.makeCompound(lines_compound)
         l_obj.ViewObject.DrawStyle = "Dashed"
         l_obj.ViewObject.LineWidth = 1.0
         traj.addObject(l_obj)
 
     FreeCAD.Gui.updateGui()
-
 
 
 def visibilityTrajectoryLines(show):
